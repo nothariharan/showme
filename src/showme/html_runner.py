@@ -13,6 +13,8 @@ from html.parser import HTMLParser
 from urllib.parse import urlencode, urljoin
 from urllib.request import Request, urlopen
 
+from showme.notes import write_note_file
+
 
 class RunError(RuntimeError):
     pass
@@ -47,6 +49,12 @@ class HtmlSession:
                 page = self._require_page(step["id"])
                 if fields["text"] not in page.body:
                     raise RunError(f"step {step['id']} did not find {fields['text']!r}")
+            elif action == "note_links":
+                page = self._require_page(step["id"])
+                count = write_note_file(fields["path"], fields["kind"], page.links)
+                if count == 0:
+                    raise RunError(f"step {step['id']} found no {fields['kind']} links on {page.url}")
+                print(f"wrote {count} {fields['kind']} to {fields['path']}")
             elif action == "press":
                 raise RunError(f"step {step['id']} uses press, which this HTML runner does not perform")
             else:
@@ -61,7 +69,7 @@ class HtmlSession:
         return self.page
 
 
-def session_for(browser: bool) -> HtmlSession:
+def session_for(browser: bool, headed: bool = False) -> HtmlSession:
     if not browser:
         return HtmlSession()
     try:
@@ -70,7 +78,7 @@ def session_for(browser: bool) -> HtmlSession:
         raise RunError(
             "Playwright is not installed. Install it with: pip install 'showme[browser]'"
         ) from exc
-    return PlaywrightSession()
+    return PlaywrightSession(headed=headed)
 
 
 def _click(page: Page, target: str, typed: dict[str, str]) -> Page:

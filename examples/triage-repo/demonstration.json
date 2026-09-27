@@ -1,0 +1,52 @@
+{
+  "name": "triage-repo",
+  "description": "Read one GitHub repository's newest open issues and pull requests and write the titles into notes. Use when someone asks to check a repository for new issues or to triage a repo.",
+  "explanation": "Two demonstrations opened the issue list, saved every visible title, opened Pull requests, and saved those titles. The repository changed. The tabs and the notes button did not.",
+  "success": "notes/issues.md and notes/pulls.md list the titles from the live GitHub pages.",
+  "parameters": [
+    {
+      "name": "owner",
+      "description": "Changes between demonstrations. Example taken from the first run.",
+      "example": "openai"
+    },
+    {
+      "name": "repo",
+      "description": "Changes between demonstrations. Example taken from the first run.",
+      "example": "openai-agents-python"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step-1",
+      "action": "navigate",
+      "narration": "Opened this page.",
+      "url": "https://github.com/{owner}/{repo}/issues"
+    },
+    {
+      "id": "step-2",
+      "action": "note_links",
+      "narration": "Wrote each visible title on this list into a notes file.",
+      "kind": "issues",
+      "path": "notes/issues.md"
+    },
+    {
+      "id": "step-3",
+      "action": "click",
+      "narration": "Activated the control with this visible label.",
+      "target": "Pull requests"
+    },
+    {
+      "id": "step-4",
+      "action": "navigate",
+      "narration": "Opened this page.",
+      "url": "https://github.com/{owner}/{repo}/pulls"
+    },
+    {
+      "id": "step-5",
+      "action": "note_links",
+      "narration": "Wrote each visible title on this list into a notes file.",
+      "kind": "pulls",
+      "path": "notes/pulls.md"
+    }
+  ]
+}

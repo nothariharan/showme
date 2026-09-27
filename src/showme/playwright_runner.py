@@ -10,13 +10,18 @@ from __future__ import annotations
 from playwright.sync_api import sync_playwright
 
 from showme.html_runner import Page, RunError, _fill
+from showme.notes import write_note_file
 
 
 class PlaywrightSession:
+    def __init__(self, headed: bool = False):
+        self.headed = headed
+
     def run(self, trace: dict, params: dict[str, str]) -> Page:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=True)
+            browser = playwright.chromium.launch(headless=not self.headed)
             page = browser.new_page()
+            page.set_default_navigation_timeout(60000)
             try:
                 for step in trace["steps"]:
                     if step["executor"] != "agent":
@@ -35,17 +40,32 @@ class PlaywrightSession:
             page.get_by_label(fields["target"], exact=True).fill(fields["text"])
             return
         if action == "click":
-            locator = page.get_by_text(fields["target"], exact=True)
+            target = fields["target"]
+            locator = page.get_by_text(target, exact=True)
+            if locator.count() == 0:
+                locator = page.get_by_role("link", name=target)
+            if locator.count() == 0:
+                locator = page.get_by_role("tab", name=target)
             if locator.count() == 0:
                 visible = page.locator("a, button").all_inner_texts()
                 shown = ", ".join(text.strip() for text in visible if text.strip()) or "none"
                 raise RunError(
-                    f"page has no link or button named {fields['target']!r}. Visible controls: {shown}"
+                    f"page has no link or button named {target!r}. Visible controls: {shown}"
                 )
             locator.first.click()
             return
         if action == "wait_for":
             if fields["text"] not in page.content():
                 raise RunError(f"step {step_id} did not find {fields['text']!r}")
+            return
+        if action == "note_links":
+            raw = page.eval_on_selector_all(
+                "a[href]",
+                "els => els.map(el => [(el.innerText || '').trim(), el.href])",
+            )
+            count = write_note_file(fields["path"], fields["kind"], [(text, href) for text, href in raw])
+            if count == 0:
+                raise RunError(f"step {step_id} found no {fields['kind']} links on {page.url}")
+            print(f"wrote {count} {fields['kind']} to {fields['path']}")
             return
         raise RunError(f"step {step_id} has unknown action {action}")

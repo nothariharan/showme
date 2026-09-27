@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from showme.__main__ import main  # noqa: E402
-from showme.record import capture, recording_url  # noqa: E402
+from showme.record import accept_recorded_event, capture, normalize_tab, recording_url  # noqa: E402
 
 PORTAL_PATH = ROOT / "examples" / "billing_portal" / "server.py"
 EVENTS = [
@@ -52,6 +52,26 @@ def _cli(*args: str) -> tuple[int, str, str]:
 
 
 class RecordTests(unittest.TestCase):
+    def test_browser_recorder_keeps_the_triage_steps_only(self) -> None:
+        self.assertEqual(normalize_tab("Issues 32"), "Issues")
+        events: list[dict] = []
+        self.assertIsNone(accept_recorded_event(events, {"type": "click", "target": "Fix the login bug"}))
+        self.assertEqual(
+            accept_recorded_event(events, {"type": "navigate", "url": "https://github.com/openai/openai-agents-python/issues?q=is%3Aopen"}),
+            {"type": "navigate", "url": "https://github.com/openai/openai-agents-python/issues"},
+        )
+        self.assertIsNone(
+            accept_recorded_event(events, {"type": "navigate", "url": "https://github.com/openai/openai-agents-python/issues"})
+        )
+        self.assertEqual(
+            accept_recorded_event(events, {"type": "note_links", "kind": "issues", "path": "notes/issues.md"}),
+            {"type": "note_links", "kind": "issues", "path": "notes/issues.md"},
+        )
+        self.assertEqual(accept_recorded_event(events, {"type": "click", "target": "Pull requests 4"})["target"], "Pull requests")
+        self.assertEqual(
+            [event["type"] for event in events],
+            ["navigate", "note_links", "click"],
+        )
     def test_recording_url_uses_the_portal_host(self) -> None:
         self.assertEqual(
             recording_url("http://127.0.0.1:9/billing"),
@@ -195,6 +215,15 @@ class BrowserFlagTests(unittest.TestCase):
 
 
 class McpToolTests(unittest.TestCase):
+    def test_repository_parser_accepts_a_github_url(self) -> None:
+        from showme.mcp_tools import parse_repository
+
+        self.assertEqual(parse_repository("https://github.com/openclaw/openclaw"), ("openclaw", "openclaw"))
+        self.assertEqual(parse_repository("https://github.com/openclaw/openclaw/issues"), ("openclaw", "openclaw"))
+        self.assertEqual(parse_repository("openclaw/openclaw"), ("openclaw", "openclaw"))
+        with self.assertRaises(ValueError):
+            parse_repository("openclaw")
+
     def test_tools_induce_compile_and_prove_without_the_mcp_package(self) -> None:
         from showme.mcp_tools import tool_compile, tool_induce, tool_prove
 
@@ -250,4 +279,7 @@ class McpToolTests(unittest.TestCase):
         except ImportError:
             self.skipTest("mcp extra missing")
         names = sorted(tool.name for tool in asyncio.run(server.list_tools()))
-        self.assertEqual(names, ["showme_compile", "showme_induce", "showme_prove"])
+        self.assertEqual(
+            names,
+            ["showme_compile", "showme_induce", "showme_prove", "showme_run", "showme_triage"],
+        )

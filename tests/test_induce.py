@@ -149,6 +149,92 @@ class InduceTests(unittest.TestCase):
             written = json.loads(out.read_text(encoding="utf-8"))
             self.assertEqual(written["parameters"][0]["name"], "portal_url")
 
+    def test_two_github_repos_become_owner_and_repo(self) -> None:
+        demo = induce_bundle(
+            {
+                "name": "triage-repo",
+                "description": "Read one repository's open issues and pull requests and write the titles into notes. Use when that triage should be repeated.",
+                "explanation": "The person opened the issue list, saved every title, opened pull requests, and saved those titles too.",
+                "success": "notes/issues.md and notes/pulls.md list the titles from the live GitHub pages.",
+                "runs": [
+                    {
+                        "events": [
+                            {"type": "navigate", "url": "https://github.com/openai/openai-agents-python/issues"},
+                            {"type": "note_links", "kind": "issues", "path": "notes/issues.md"},
+                            {"type": "click", "target": "Pull requests"},
+                            {"type": "navigate", "url": "https://github.com/openai/openai-agents-python/pulls"},
+                            {"type": "note_links", "kind": "pulls", "path": "notes/pulls.md"},
+                        ]
+                    },
+                    {
+                        "events": [
+                            {"type": "navigate", "url": "https://github.com/google/adk-js/issues"},
+                            {"type": "note_links", "kind": "issues", "path": "notes/issues.md"},
+                            {"type": "click", "target": "Pull requests"},
+                            {"type": "navigate", "url": "https://github.com/google/adk-js/pulls"},
+                            {"type": "note_links", "kind": "pulls", "path": "notes/pulls.md"},
+                        ]
+                    },
+                ],
+            }
+        )
+        self.assertEqual(
+            [item["name"] for item in demo["parameters"]],
+            ["owner", "repo"],
+        )
+        self.assertEqual(demo["steps"][0]["url"], "https://github.com/{owner}/{repo}/issues")
+        self.assertEqual(demo["steps"][3]["url"], "https://github.com/{owner}/{repo}/pulls")
+        self.assertEqual(demo["steps"][2]["target"], "Pull requests")
+
+    def test_a_different_final_path_segment_is_refused(self) -> None:
+        with self.assertRaises(InduceError):
+            induce_bundle(
+                {
+                    "name": "triage-repo",
+                    "description": "Read one repository's open issues and pull requests and write the titles into notes. Use when that triage should be repeated.",
+                    "explanation": "The person opened two different pages, so this is not one workflow.",
+                    "success": "notes/issues.md lists the titles.",
+                    "runs": [
+                        {"events": [{"type": "navigate", "url": "https://github.com/openai/openai-agents-python/issues"}]},
+                        {"events": [{"type": "navigate", "url": "https://github.com/openai/openai-agents-python/pulls"}]},
+                    ],
+                }
+            )
+
+    def test_note_links_writes_issue_titles(self) -> None:
+        from showme.html_runner import Page
+
+        with tempfile.TemporaryDirectory() as tmp:
+            destination = Path(tmp) / "notes" / "issues.md"
+            session = HtmlSession(
+                page=Page(
+                    url="https://github.com/openai/openai-agents-python/issues",
+                    body="",
+                    links=[
+                        ("Fix the login bug", "https://github.com/openai/openai-agents-python/issues/12"),
+                        ("#12", "https://github.com/openai/openai-agents-python/issues/12"),
+                        ("Issues", "https://github.com/openai/openai-agents-python/issues"),
+                    ],
+                    forms=[],
+                )
+            )
+            session.run(
+                {
+                    "steps": [
+                        {
+                            "id": "save",
+                            "action": "note_links",
+                            "executor": "agent",
+                            "fields": {"kind": "issues", "path": str(destination)},
+                        }
+                    ]
+                },
+                {},
+            )
+            text = destination.read_text(encoding="utf-8")
+            self.assertIn("Fix the login bug", text)
+            self.assertNotIn("#12", text)
+
     def _record(self, portal, downloads: Path, customer: str) -> list[dict]:
         httpd = portal.start(downloads)
         self.addCleanup(httpd.server_close)

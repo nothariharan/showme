@@ -11,7 +11,7 @@ import sys
 
 def build_server():
     from mcp.server.fastmcp import FastMCP
-    from showme.mcp_tools import tool_compile, tool_induce, tool_prove
+    from showme.mcp_tools import tool_compile, tool_induce, tool_prove, tool_run, tool_triage
 
     server = FastMCP("showme")
 
@@ -29,6 +29,21 @@ def build_server():
     def showme_prove(skill: str, download_dir: str, sets: list[str] | None = None, customer: str | None = None) -> str:
         """Run a skill and return proof.json. Fails when the PDF check fails."""
         return tool_prove(skill, download_dir, sets, customer)
+
+    @server.tool()
+    def showme_run(skill: str, sets: list[str] | None = None, headed: bool = False) -> str:
+        """Replay a compiled ShowMe skill in a browser. sets are name=value parameters. Returns the notes it wrote."""
+        return tool_run(skill, sets, headed)
+
+    @server.tool()
+    def showme_triage(repository: str, headed: bool = False) -> str:
+        """Check one public GitHub repository for new issues and pull requests and write the titles into notes.
+
+        repository is owner/repo or a https://github.com/owner/repo URL.
+        Uses the triage-repo skill built from two recorded demonstrations.
+        Returns the notes. Does not invent titles.
+        """
+        return tool_triage(repository, headed)
 
     return server
 

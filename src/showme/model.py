@@ -22,6 +22,7 @@ AGENT_ACTIONS = {
     "type": ("target", "text"),
     "press": ("key",),
     "wait_for": ("text",),
+    "note_links": ("kind", "path"),
 }
 ACTIONS = {**LOCAL_ACTIONS, **AGENT_ACTIONS}
 
@@ -166,6 +167,9 @@ def _steps(value: Any, known: set[str], errors: list[str]) -> list[Step]:
                 fields[key] = text
                 _check_placeholders(text, known, f"{label}.{key}", errors)
         if step_id and action and len(fields) == len(required) and narration:
+            if action == "note_links" and fields.get("kind") not in {"issues", "pulls"}:
+                errors.append(f"{label}.kind must be issues or pulls")
+                continue
             executor = "local" if action in LOCAL_ACTIONS else "agent"
             parsed.append(Step(id=step_id, action=action, narration=narration, fields=fields, executor=executor))
     return parsed

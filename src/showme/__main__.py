@@ -12,7 +12,7 @@ from showme.compile import compile_path, retarget
 from showme.html_runner import RunError, session_for
 from showme.induce import InduceError, induce_bundle
 from showme.model import DemoError
-from showme.record import RecordError, bundle_recordings, capture
+from showme.record import RecordError, bundle_recordings, capture, capture_browser
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -30,6 +30,7 @@ def main(argv: list[str] | None = None) -> int:
     run_parser.add_argument("skill", type=Path)
     run_parser.add_argument("--set", action="append", default=[], metavar="NAME=VALUE")
     run_parser.add_argument("--browser", action="store_true", help="Run agent steps in Playwright. Requires the browser extra.")
+    run_parser.add_argument("--headed", action="store_true", help="Show the browser window while replaying.")
 
     induce_parser = sub.add_parser("induce", help="Compile two or more demonstrations into one parameterized demonstration.")
     induce_parser.add_argument("bundle", type=Path)
@@ -54,6 +55,11 @@ def main(argv: list[str] | None = None) -> int:
     record_parser.add_argument("--portal-url", help="Portal page to open. The recording is read from /showme/recording on that host.")
     record_parser.add_argument("--out", type=Path)
     record_parser.add_argument("--fetch", action="store_true", help="Fetch the recording now. Do not open a browser or wait for Enter.")
+    record_parser.add_argument(
+        "--browser",
+        action="store_true",
+        help="Record a real site in Chromium. Use a GitHub issues URL. Requires the browser extra.",
+    )
     record_parser.add_argument("--bundle", nargs=2, type=Path, metavar=("RUN1", "RUN2"))
     record_parser.add_argument("--name")
     record_parser.add_argument("--description")
@@ -69,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{demo.name}: {len(demo.steps)} steps, {len(demo.parameters)} parameters")
             return 0
         if args.command == "run":
-            return _run_skill(args.skill, args.set, browser=args.browser)
+            return _run_skill(args.skill, args.set, browser=args.browser, headed=args.headed)
         if args.command == "prove":
             return _prove_skill(args.skill, args.set, args.download_dir, args.customer, browser=args.browser)
         if args.command == "record":
@@ -125,12 +131,16 @@ def _record(args: argparse.Namespace) -> int:
     if not args.portal_url or args.out is None:
         print("capture mode needs --portal-url and --out", file=sys.stderr)
         return 2
+    if args.browser:
+        capture_browser(args.portal_url, args.out)
+        print(args.out)
+        return 0
     capture(args.portal_url, args.out, fetch_only=args.fetch)
     print(args.out)
     return 0
 
 
-def _run_skill(skill: Path, pairs: list[str], browser: bool = False) -> int:
+def _run_skill(skill: Path, pairs: list[str], browser: bool = False, headed: bool = False) -> int:
     trace_path = skill / "references" / "trace.json"
     trace = json.loads(trace_path.read_text(encoding="utf-8"))
     params = _apply_sets(trace, pairs)
@@ -143,7 +153,7 @@ def _run_skill(skill: Path, pairs: list[str], browser: bool = False) -> int:
         completed = subprocess.run(command, check=False)
         return completed.returncode
     if executors == {"agent"}:
-        page = session_for(browser).run(trace, params)
+        page = session_for(browser, headed=headed).run(trace, params)
         print(f"finished on {page.url}")
         return 0
     print("this skill mixes local and agent steps; run those parts separately", file=sys.stderr)

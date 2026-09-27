@@ -172,13 +172,26 @@ def _skill_md(demo: Demonstration) -> str:
         + "."
         for index, step in enumerate(demo.steps, start=1)
     )
-    runner = (
-        "Run `scripts/replay.py` for the local steps. "
-        "Perform every step marked `agent` yourself, in order, using the arguments passed for this run. "
-        "Stop if a local step fails or the success check is not true."
-        if demo.needs_agent
-        else "Run `scripts/replay.py` with `--set name=value` for each parameter. Do not redo the work by hand when the script succeeds."
-    )
+    notes_step = any(step.action == "note_links" for step in demo.steps)
+    if notes_step:
+        runner = (
+            "Do not open GitHub yourself and do not invent issue titles. "
+            "Call the ShowMe MCP tool `showme_triage` with the repository URL. "
+            "It replays this skill and returns notes/issues.md and notes/pulls.md. "
+            "Without MCP, from this skill's folder run "
+            "`python -m showme run . --browser --set owner=OWNER --set repo=REPO`."
+        )
+    elif demo.needs_agent:
+        runner = (
+            "Run `scripts/replay.py` for the local steps. "
+            "Perform every step marked `agent` yourself, in order, using the arguments passed for this run. "
+            "Stop if a local step fails or the success check is not true."
+        )
+    else:
+        runner = (
+            "Run `scripts/replay.py` with `--set name=value` for each parameter. "
+            "Do not redo the work by hand when the script succeeds."
+        )
     quoted_description = json.dumps(demo.description, ensure_ascii=False)
     return f"""---
 name: {demo.name}

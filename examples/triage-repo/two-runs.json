@@ -1,0 +1,26 @@
+{
+  "name": "triage-repo",
+  "description": "Read one GitHub repository's newest open issues and pull requests and write the titles into notes. Use when someone asks to check a repository for new issues or to triage a repo.",
+  "explanation": "Two demonstrations opened the issue list, saved every visible title, opened Pull requests, and saved those titles. The repository changed. The tabs and the notes button did not.",
+  "success": "notes/issues.md and notes/pulls.md list the titles from the live GitHub pages.",
+  "runs": [
+    {
+      "events": [
+        {"type": "navigate", "url": "https://github.com/openai/openai-agents-python/issues"},
+        {"type": "note_links", "kind": "issues", "path": "notes/issues.md"},
+        {"type": "click", "target": "Pull requests"},
+        {"type": "navigate", "url": "https://github.com/openai/openai-agents-python/pulls"},
+        {"type": "note_links", "kind": "pulls", "path": "notes/pulls.md"}
+      ]
+    },
+    {
+      "events": [
+        {"type": "navigate", "url": "https://github.com/google/adk-js/issues"},
+        {"type": "note_links", "kind": "issues", "path": "notes/issues.md"},
+        {"type": "click", "target": "Pull requests"},
+        {"type": "navigate", "url": "https://github.com/google/adk-js/pulls"},
+        {"type": "note_links", "kind": "pulls", "path": "notes/pulls.md"}
+      ]
+    }
+  ]
+}

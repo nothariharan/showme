@@ -92,6 +92,16 @@ def steps_from_events(events: list[dict[str, Any]], label: str = "events") -> li
                     text=_need(event, "text", label, index),
                 )
             )
+        elif kind == "note_links":
+            steps.append(
+                _event_step(
+                    step_id,
+                    "note_links",
+                    "Wrote each visible title on this list into a notes file.",
+                    kind=_need(event, "kind", label, index),
+                    path=_need(event, "path", label, index),
+                )
+            )
         else:
             raise InduceError([f"{label}[{index}] has unknown event type {kind!r}"])
     return steps
@@ -183,26 +193,64 @@ def _varying_field(
             return ""
         return "{" + _bind(parameters, _slug(target), values[0]) + "}"
     if action == "navigate" and key == "url":
-        origins = []
-        paths = []
-        for value in values:
-            parsed = urlparse(value)
-            if not parsed.scheme or not parsed.netloc:
-                errors.append(f"step {index + 1} has a relative url {value!r} and runs disagree")
-                return ""
-            origins.append(f"{parsed.scheme}://{parsed.netloc}")
-            rest = parsed.path or "/"
-            if parsed.query:
-                rest += "?" + parsed.query
-            paths.append(rest)
-        if len(set(paths)) != 1:
-            errors.append(f"step {index + 1} changes the path, not just the server")
-            return ""
-        return "{" + _bind(parameters, "portal_url", origins[0]) + "}" + paths[0]
+        return _navigate_placeholder(values, parameters, errors, index)
     errors.append(
         f"step {index + 1} field {key} differs across runs ({values[0]!r} vs {values[1]!r}) and is not an input"
     )
     return ""
+
+
+def _navigate_placeholder(
+    values: list[str],
+    parameters: dict[str, str],
+    errors: list[str],
+    index: int,
+) -> str:
+    parsed = []
+    for value in values:
+        item = urlparse(value)
+        if not item.scheme or not item.netloc:
+            errors.append(f"step {index + 1} has a relative url {value!r} and runs disagree")
+            return ""
+        parsed.append(item)
+    origins = [f"{item.scheme}://{item.netloc}" for item in parsed]
+    paths = [item.path or "/" for item in parsed]
+    queries = [item.query for item in parsed]
+    if len(set(queries)) != 1:
+        errors.append(f"step {index + 1} changes the query string and is not an input")
+        return ""
+    suffix = f"?{queries[0]}" if queries[0] else ""
+    if len(set(paths)) == 1:
+        if len(set(origins)) == 1:
+            return values[0]
+        return "{" + _bind(parameters, "portal_url", origins[0]) + "}" + paths[0] + suffix
+    if len(set(origins)) != 1:
+        errors.append(f"step {index + 1} changes the path, not just the server")
+        return ""
+    parts = [path.strip("/").split("/") if path.strip("/") else [] for path in paths]
+    if any(len(part) != len(parts[0]) for part in parts) or not parts[0]:
+        errors.append(f"step {index + 1} changes the path, not just the server")
+        return ""
+    columns = list(zip(*parts, strict=True))
+    if len(set(columns[-1])) != 1:
+        errors.append(f"step {index + 1} changes the path, not just the server")
+        return ""
+    built: list[str] = []
+    for column_index, column in enumerate(columns):
+        if len(set(column)) == 1:
+            built.append(column[0])
+            continue
+        if not all(re.fullmatch(r"[A-Za-z0-9_.-]+", piece) for piece in column):
+            errors.append(f"step {index + 1} changes the path, not just the server")
+            return ""
+        if len(columns) == 3 and column_index == 0:
+            name = "owner"
+        elif len(columns) == 3 and column_index == 1:
+            name = "repo"
+        else:
+            name = f"path_{column_index + 1}"
+        built.append("{" + _bind(parameters, name, column[0]) + "}")
+    return origins[0] + "/" + "/".join(built) + suffix
 
 
 def _bind(parameters: dict[str, str], name: str, example: str) -> str:

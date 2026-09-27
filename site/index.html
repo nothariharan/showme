@@ -11,25 +11,25 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="dither dither-left" aria-hidden="true"></div>
-  <div class="dither dither-right" aria-hidden="true"></div>
-
   <header class="topbar">
-    <a class="brand" href="#top">showme</a>
-    <nav class="nav" aria-label="Page">
-      <a href="#how">How it works</a>
-      <a href="#agents">Agents</a>
-      <a href="#compare">Compare</a>
-      <a href="#run">Run</a>
-    </nav>
-    <button class="chip" type="button" data-copy="python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042" aria-label="Copy prove command">
-      <code>python -m showme prove</code>
-      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect><path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path></svg>
-    </button>
+    <div class="topbar-inner">
+      <a class="brand" href="#top">showme</a>
+      <nav class="nav" aria-label="Page">
+        <a href="#how">How it works</a>
+        <a href="#agents">Agents</a>
+        <a href="#compare">Compare</a>
+        <a href="#run">Run</a>
+      </nav>
+      <button class="chip" type="button" data-copy="python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042" aria-label="Copy prove command">
+        <code>python -m showme prove</code>
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect><path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path></svg>
+      </button>
+    </div>
   </header>
 
   <main id="top">
     <section class="hero">
+      <canvas class="field" aria-hidden="true"></canvas>
       <div class="wrap hero-copy">
         <h1>Show it once. Prove it on a clean machine. Any agent can run it.</h1>
         <p class="lede">Two demonstrations become one Agent Skill. The repeat writes the tax PDF in local Python. It spends no model tokens, and a renamed button stops the run.</p>
@@ -68,51 +68,61 @@
         <div class="stage-col">
           <div class="stage" data-step="watch">
             <p class="stage-caption"><span data-cap="watch">your demonstrations</span><span data-cap="prove">the clean run</span><span data-cap="halt">the stop</span><span data-cap="agents">the agents</span></p>
-            <svg class="pixel" viewBox="0 0 640 360" role="img" aria-label="Diagram of a demonstration becoming a proved skill that agents can run.">
-              <g class="node node-you" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="36" y="118" width="92" height="58"/>
-                <rect x="48" y="176" width="68" height="8"/>
-                <rect x="70" y="184" width="24" height="10"/>
-                <rect class="lamp" x="48" y="128" width="8" height="8"/>
-              </g>
-              <text class="label" x="82" y="220" text-anchor="middle">you</text>
-              <text class="sublabel" x="82" y="236" text-anchor="middle">two runs</text>
-
-              <g class="wire wire-prove">
-                <line x1="128" y1="148" x2="210" y2="148"/>
-                <text x="168" y="138" text-anchor="middle">prove</text>
-              </g>
-              <g class="node node-proof">
-                <rect x="214" y="108" width="72" height="80" fill="none" stroke="currentColor" stroke-width="2"/>
-                <rect x="226" y="122" width="48" height="6"/>
-                <rect x="226" y="134" width="36" height="6"/>
-                <rect x="226" y="146" width="42" height="6"/>
-                <text class="pdf" x="250" y="176" text-anchor="middle">PDF</text>
-              </g>
-              <text class="label" x="250" y="220" text-anchor="middle">the proof</text>
-              <text class="sublabel" x="250" y="236" text-anchor="middle">tax-1042.pdf</text>
-
-              <g class="wire wire-skill">
-                <line x1="286" y1="148" x2="360" y2="148"/>
-              </g>
-              <g class="node node-skill">
-                <rect x="364" y="112" width="78" height="72" fill="none" stroke="currentColor" stroke-width="2"/>
-                <text class="pdf" x="403" y="154" text-anchor="middle">SKILL</text>
-              </g>
-              <text class="label" x="403" y="220" text-anchor="middle">the skill</text>
-              <text class="sublabel" x="403" y="236" text-anchor="middle">0 tokens</text>
-
-              <g class="agents-row">
-                <g class="agent agent-bob"><rect x="470" y="48" width="28" height="28"/><text x="484" y="92" text-anchor="middle">Bob</text></g>
-                <g class="agent agent-claude"><rect x="518" y="48" width="28" height="28"/><text x="532" y="92" text-anchor="middle">Claude</text></g>
-                <g class="agent agent-cursor"><rect x="470" y="168" width="28" height="28"/><text x="484" y="212" text-anchor="middle">Cursor</text></g>
-                <g class="agent agent-codex"><rect x="518" y="168" width="28" height="28"/><text x="532" y="212" text-anchor="middle">Codex</text></g>
-                <path class="agent-wires" d="M442 148 H470 M484 76 V148 H498 M532 76 V120 M484 196 V148 H498 M532 196 V176" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <svg class="pixel" viewBox="0 0 560 300" role="img" aria-label="Diagram of a demonstration becoming a proved skill that agents can run.">
+              <g class="scene scene-watch" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="36" y="28" width="220" height="168"/>
+                <text x="56" y="60">run 1</text>
+                <text x="56" y="96">open billing</text>
+                <text x="56" y="128">search <tspan class="mark">1042</tspan></text>
+                <text x="56" y="160">Export PDF</text>
+                <rect x="304" y="28" width="220" height="168"/>
+                <text x="324" y="60">run 2</text>
+                <text x="324" y="96">open billing</text>
+                <text x="324" y="128">search <tspan class="mark">9921</tspan></text>
+                <text x="324" y="160">Export PDF</text>
+                <text class="scene-note" x="280" y="236" text-anchor="middle">same clicks. the id is the only change.</text>
+                <text class="scene-note" x="280" y="262" text-anchor="middle">that id becomes customer_id</text>
               </g>
 
-              <g class="halt-mark">
-                <rect x="214" y="250" width="150" height="28" fill="none" stroke="currentColor" stroke-width="2"/>
-                <text x="289" y="269" text-anchor="middle">stopped · Export PDF missing</text>
+              <g class="scene scene-prove" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="36" y="56" width="200" height="140"/>
+                <text x="56" y="92">clean machine</text>
+                <text x="56" y="128">no recording</text>
+                <text x="56" y="160">local Python</text>
+                <line x1="236" y1="126" x2="300" y2="126"/>
+                <path d="M292 118 l8 8 l-8 8" />
+                <rect x="312" y="40" width="212" height="176"/>
+                <text x="332" y="76">tax-1042.pdf</text>
+                <text x="332" y="112">Acme</text>
+                <text x="332" y="144">120.00</text>
+                <text class="mark" x="332" y="180">Download started</text>
+              </g>
+
+              <g class="scene scene-halt" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="48" y="24" width="464" height="196"/>
+                <text x="72" y="60">looking for Export PDF</text>
+                <text x="72" y="104">on the page</text>
+                <text x="220" y="104">Customer search</text>
+                <text x="220" y="140">Download PDF</text>
+                <text class="struck" x="220" y="176">Export PDF</text>
+                <line x1="220" y1="170" x2="318" y2="170"/>
+                <text class="mark" x="336" y="176">missing</text>
+                <text class="scene-note" x="280" y="258" text-anchor="middle">stopped. it names the label and does not click a neighbor.</text>
+              </g>
+
+              <g class="scene scene-agents" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="214" y="20" width="132" height="72"/>
+                <text x="280" y="62" text-anchor="middle">SKILL.md</text>
+                <path d="M280 92 V128 M96 128 H464 M96 128 V156 M218 128 V156 M342 128 V156 M464 128 V156"/>
+                <image href="assets/icons/ibm.svg" x="80" y="160" width="32" height="32"/>
+                <image href="assets/icons/claude.svg" x="202" y="160" width="32" height="32"/>
+                <image href="assets/icons/cursor.svg" x="326" y="160" width="32" height="32"/>
+                <image href="assets/icons/openai.svg" x="448" y="160" width="32" height="32"/>
+                <text x="96" y="216" text-anchor="middle">Bob</text>
+                <text x="218" y="216" text-anchor="middle">Claude</text>
+                <text x="342" y="216" text-anchor="middle">Cursor</text>
+                <text x="464" y="216" text-anchor="middle">Codex</text>
+                <text class="scene-note" x="280" y="262" text-anchor="middle">one folder. the player repeats the proved steps.</text>
               </g>
             </svg>
 
@@ -132,17 +142,17 @@
         <div class="tree" aria-hidden="true">
           <div class="tree-top"><span class="px px-you"></span><small>the skill</small></div>
           <div class="tree-row">
-            <div><span class="px px-bob"></span><small>Bob</small></div>
-            <div><span class="px px-claude"></span><small>Claude</small></div>
-            <div><span class="px px-cursor"></span><small>Cursor</small></div>
-            <div><span class="px px-codex"></span><small>Codex</small></div>
+            <div><img class="brand" src="assets/icons/ibm.svg" alt="" width="28" height="28"><small>Bob</small></div>
+            <div><img class="brand" src="assets/icons/claude.svg" alt="" width="28" height="28"><small>Claude</small></div>
+            <div><img class="brand" src="assets/icons/cursor.svg" alt="" width="28" height="28"><small>Cursor</small></div>
+            <div><img class="brand" src="assets/icons/openai.svg" alt="" width="28" height="28"><small>Codex</small></div>
           </div>
         </div>
         <div class="tabs" role="tablist">
-          <button type="button" class="tab is-on" role="tab" aria-selected="true" data-agent="bob">Bob</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="claude">Claude Code</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="cursor">Cursor</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="codex">Codex</button>
+          <button type="button" class="tab is-on" role="tab" aria-selected="true" data-agent="bob"><img src="assets/icons/ibm.svg" alt="" width="14" height="14">Bob</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="claude"><img src="assets/icons/claude.svg" alt="" width="14" height="14">Claude Code</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="cursor"><img src="assets/icons/cursor.svg" alt="" width="14" height="14">Cursor</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="codex"><img src="assets/icons/openai.svg" alt="" width="14" height="14">Codex</button>
         </div>
         <div class="agent-panel is-on" data-agent="bob">
           <button class="chip chip-block" type="button" data-copy="python -W default -m unittest discover -s tests -p test_prove.py -v">
@@ -218,7 +228,6 @@
     </section>
 
     <section class="closer" id="run">
-      <div class="dither dither-closer" aria-hidden="true"></div>
       <div class="wrap narrow">
         <h2>Run it.</h2>
         <p class="lede">Python 3.11 or newer. The billing portal in this repo is the clean machine. Twenty minutes is enough to induce, prove, and watch a renamed button stop.</p>
@@ -231,6 +240,7 @@
   </main>
 
   <footer class="footer">
+    <canvas class="field" aria-hidden="true"></canvas>
     <div class="wrap">
       <p>local tool · MIT · <a href="https://github.com/nothariharan/showme">github.com/nothariharan/showme</a></p>
       <p>Headlines set in <a href="fonts/OFL.txt">Redaction</a> by MCKL.</p>
@@ -239,21 +249,100 @@
 
   <script>
     (function () {
+      var bayer = [
+        [0, 8, 2, 10],
+        [12, 4, 14, 6],
+        [3, 11, 1, 9],
+        [15, 7, 13, 5]
+      ];
+      function puff(x, y, cx, cy, rx, ry) {
+        var dx = (x - cx) / rx;
+        var dy = (y - cy) / ry;
+        var d = dx * dx + dy * dy;
+        return d >= 1 ? 0 : 1 - d;
+      }
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var started = performance.now();
+      function paintField(canvas, now) {
+        var ctx = canvas.getContext("2d", { alpha: true });
+        var cell = 5;
+        var w = Math.max(1, Math.floor(canvas.clientWidth / cell));
+        var h = Math.max(1, Math.floor(canvas.clientHeight / cell));
+        canvas.width = w;
+        canvas.height = h;
+        var image = ctx.createImageData(w, h);
+        var data = image.data;
+        var t = reduceMotion ? 0 : (now - started) / 1000;
+        var drift = Math.sin(t * 0.55) * 4;
+        var reach = Math.max(16, Math.min(24, Math.floor(Math.min(w, h) * 0.2)));
+        var ry = Math.round(reach * 0.72);
+        function inside(cx, cy, rx, rry) {
+          return [
+            Math.max(rx + 2, Math.min(w - rx - 2, cx)),
+            Math.max(rry + 2, Math.min(h - rry - 2, cy)),
+            rx,
+            rry
+          ];
+        }
+        var clouds = [
+          inside(reach + 10 + drift, h - ry - 10, reach, ry),
+          inside(w - reach - 10 - drift, ry + 10, Math.round(reach * 0.86), Math.round(ry * 0.86))
+        ];
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var density = 0;
+            for (var c = 0; c < clouds.length; c++) {
+              density += puff(x, y, clouds[c][0], clouds[c][1], clouds[c][2], clouds[c][3]);
+            }
+            density *= 0.92;
+            var threshold = (bayer[y & 3][x & 3] + 0.5) / 16;
+            if (density < threshold) continue;
+            var i = (y * w + x) * 4;
+            data[i] = 214;
+            data[i + 1] = 216;
+            data[i + 2] = 220;
+            data[i + 3] = Math.floor(70 + density * 90);
+          }
+        }
+        ctx.putImageData(image, 0, 0);
+      }
+      function paintFields(now) {
+        document.querySelectorAll(".field").forEach(function (canvas) {
+          paintField(canvas, now || performance.now());
+        });
+      }
+      function tick(now) {
+        paintFields(now);
+        if (!reduceMotion) window.requestAnimationFrame(tick);
+      }
+      window.requestAnimationFrame(tick);
+      window.addEventListener("resize", function () { paintFields(performance.now()); });
+
       var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
       var stage = document.querySelector(".stage");
-      if (stage && "IntersectionObserver" in window) {
-        var observer = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-            var name = entry.target.getAttribute("data-step");
-            stage.setAttribute("data-step", name);
-            steps.forEach(function (step) {
-              step.classList.toggle("is-on", step === entry.target);
-            });
-          });
-        }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
-        steps.forEach(function (step) { observer.observe(step); });
+      function syncStage() {
+        if (!stage || !steps.length) return;
+        var mark = window.innerHeight * 0.42;
+        var best = null;
+        var bestDist = Infinity;
+        steps.forEach(function (step) {
+          var rect = step.getBoundingClientRect();
+          if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+          var dist = Math.abs(rect.top + Math.min(rect.height * 0.28, 160) - mark);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = step;
+          }
+        });
+        if (!best) return;
+        stage.setAttribute("data-step", best.getAttribute("data-step"));
+        steps.forEach(function (step) {
+          step.classList.toggle("is-on", step === best);
+        });
       }
+      syncStage();
+      window.addEventListener("scroll", syncStage, { passive: true });
+      window.addEventListener("resize", syncStage);
 
       var shot = document.querySelector(".shot-slot img");
       if (shot) {
