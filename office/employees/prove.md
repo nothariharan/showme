@@ -14,3 +14,5 @@ Build `showme prove`.
 - Leave `site/` and `assets/` alone.
 
 State: done
+
+Commit: 549902671dd080225c0efddc9edd3d919733018e
