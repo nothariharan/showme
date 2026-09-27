@@ -16,7 +16,7 @@ This folder is how the workstreams stay in sync. Each employee writes only their
 | --- | --- | --- |
 | prove | prove | done |
 | site | site | done |
-| tester | main | running |
+| tester | main | done |
 
 ## Done means
 
