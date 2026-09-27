@@ -4,7 +4,7 @@
       "command": "python",
       "args": ["-m", "showme.mcp"],
       "env": {
-        "PYTHONPATH": "C:\\Users\\HARIHARAN\\Desktop\\Bob\\showme\\src"
+        "PYTHONPATH": "src"
       }
     }
   }

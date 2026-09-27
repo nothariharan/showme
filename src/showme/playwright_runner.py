@@ -7,6 +7,9 @@ can tell the person how to install the extra.
 
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures
+
 from playwright.sync_api import sync_playwright
 
 from showme.html_runner import Page, RunError, _fill
@@ -18,6 +21,23 @@ class PlaywrightSession:
         self.headed = headed
 
     def run(self, trace: dict, params: dict[str, str]) -> Page:
+        # sync_playwright manages its own event loop internally. When called
+        # from inside an already-running asyncio loop (e.g. FastMCP), it
+        # raises "Playwright Sync API inside the asyncio loop". Fix: run the
+        # whole thing in a fresh thread that has no running loop.
+        try:
+            asyncio.get_running_loop()
+            in_async = True
+        except RuntimeError:
+            in_async = False
+
+        if in_async:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(self._run_sync, trace, params)
+                return future.result()
+        return self._run_sync(trace, params)
+
+    def _run_sync(self, trace: dict, params: dict[str, str]) -> Page:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=not self.headed)
             page = browser.new_page()

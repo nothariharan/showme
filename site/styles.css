@@ -255,9 +255,9 @@ button { color: inherit; background: none; border: 0; padding: 0; cursor: pointe
   padding: 18px;
 }
 
-.shot-slot.has-shot { display: grid; border-style: solid; padding: 0; }
+.shot-slot.has-shot { display: grid; border-style: solid; padding: 0; overflow: hidden; }
 .shot-slot.has-shot figcaption { display: none; }
-.shot-slot img { display: block; width: 100%; }
+.shot-slot img { display: block; width: 100%; height: auto; }
 
 .agents, .compare, .closer {
   position: relative;

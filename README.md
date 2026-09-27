@@ -1,5 +1,7 @@
 # ShowMe
 
+![Show it twice. Every agent runs it.](site/assets/social.png)
+
 ShowMe turns a piece of repeatable work into a folder any coding agent can run again.
 
 You explain when the work should happen, and you show the steps once, including which values change next time. ShowMe compiles that into an [Agent Skill](https://agentskills.io/specification): a `SKILL.md` plus a trace and a player. Claude Code, Cursor, Codex, and any other agent that reads Agent Skills can pick it up. The skill is the transferable object. The original session is not.
@@ -34,7 +36,49 @@ python -m showme induce examples/export-customer-pdf/two-runs.json --out example
 
 `showme record --portal-url http://127.0.0.1:PORT --out run.json` opens that page and waits until you press Enter, then writes the event list. `--fetch` skips the browser and the prompt. `showme record --browser --portal-url https://github.com/OWNER/REPO/issues --out run.json` records a real GitHub repository in Chromium: the Issues and Pull requests tabs, plus the Save this list to notes button. Two saved runs become a demonstration with `showme record --bundle run1.json run2.json --name ... --description ... --explanation ... --success ... --out demonstration.json`. When the two runs are different repositories, `owner` and `repo` become the parameters. `showme run <skill> --browser --headed --set owner=... --set repo=...` opens that repository and writes `notes/issues.md` and `notes/pulls.md`.
 
-`python -m showme.mcp` exposes `showme_induce`, `showme_compile`, `showme_prove`, `showme_run`, and `showme_triage` after `pip install 'showme[mcp]'`. `.bob/mcp.json` and the workspace `.cursor/mcp.json` point Bob and Cursor at that module. `showme_triage` takes a GitHub repository URL, replays the `triage-repo` skill, and returns the notes. `showme run --browser` and `showme prove --browser` use Playwright when `pip install 'showme[browser]'` is present, and otherwise print that install line. The default runner stays the stdlib HTML client.
+`python -m showme.mcp` exposes `showme_induce`, `showme_compile`, `showme_prove`, `showme_run`, and `showme_triage` after `pip install 'showme[mcp]'`. Bob’s settings for that server are [below](#ibm-bob). `showme_triage` takes a GitHub repository URL, replays the `triage-repo` skill, and returns the notes. `showme run --browser` and `showme prove --browser` use Playwright when `pip install 'showme[browser]'` is present, and otherwise print that install line. The default runner stays the stdlib HTML client.
+
+![Proved on a clean machine.](site/assets/product.png)
+
+## IBM Bob
+
+Bob is how this repository was built, and Bob is one of the agents a skill is for.
+
+### Settings
+
+IBM Bob starts ShowMe’s MCP server from `.bob/mcp.json`. The checked-in file matches `.bob/mcp.example.json`:
+
+```json
+{
+  "mcpServers": {
+    "showme": {
+      "command": "python",
+      "args": ["-m", "showme.mcp"],
+      "env": {
+        "PYTHONPATH": "src"
+      }
+    }
+  }
+}
+```
+
+`PYTHONPATH` is `src`, relative to this repository, so `python -m showme.mcp` can import the package. Install `pip install 'showme[mcp]'` first. A browser replay also needs `pip install 'showme[browser]'` and `playwright install chromium`. Any other editor uses the same command in its own MCP config. `.cursor/` is local editor state and is not part of this repository.
+
+The server exposes five tools:
+
+- `showme_induce` turns two recordings into one demonstration.
+- `showme_compile` writes the skill folder.
+- `showme_prove` runs a skill and checks the artifact.
+- `showme_run` replays a compiled skill.
+- `showme_triage` takes a GitHub repository URL, replays the `triage-repo` skill, and returns the issue and pull request titles. It does not invent titles.
+
+### How Bob was used
+
+Bob had two jobs.
+
+As the engineer, Bob opened this repo and ran `eval/BOB_PLAN.md`: the test suite, a prove for customer 1042, a prove that an unknown customer writes no PDF, and a prove that a renamed Export button stops the run. The history export is in `bob_sessions/` (`prove-suite.md`, `prove-suite.json`, and `prove-suite.png`). That export’s consumption summary shows 132.3k tokens. watsonx.ai was not on this path. The teaching step is a comparison of two demonstrations. The agent runtime that was integrated is Bob, through MCP and the Agent Skill folder.
+
+As the student, Bob is told not to open GitHub itself. `.agents/skills/triage-repo/SKILL.md` says to call `showme_triage` with the repository URL. `eval/BOB_TRIAGE.md` is that task. The repeat follows the trace. A missing control stops the run. The same folder is what Claude Code, Cursor, Codex, Hermes, and OpenCode can run. Cursor’s local copy of a skill is not committed.
 
 ## Tests
 

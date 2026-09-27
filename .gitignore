@@ -10,3 +10,5 @@ build/
 node_modules/
 .next/
 site/out/
+.cursor/
+notes/

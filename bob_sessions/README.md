@@ -15,8 +15,8 @@ Each task has:
 
 ## How these were produced
 
-1. Open the ShowMe repo (`C:\Users\HARIHARAN\Desktop\Bob\showme`) in IBM Bob.
-2. The workspace has `.bob/mcp.json` which points Bob at `python -m showme.mcp`.
+1. Open this repository in IBM Bob.
+2. `.bob/mcp.json` points Bob at `python -m showme.mcp` with `PYTHONPATH` set to `src`. The same file is copied at `.bob/mcp.example.json`. See the IBM Bob section of the repository README.
 3. Run the task described in the matching `.md` file.
 4. Open Bob's History panel, click the task header for the consumption summary, screenshot it.
 5. Click **Export task history** and save the `.md` file here.
