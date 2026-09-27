@@ -4,13 +4,14 @@ This folder holds IBM Bob task history exports for the ShowMe hackathon submissi
 
 Each task has:
 - A `.md` file — the full task history export from Bob's History panel
+- A `.json` file — the same export as JSON
 - A `.png` file — screenshot of the session consumption summary
 
 ## Tasks
 
 | File | What the session did |
 | --- | --- |
-| `prove-suite.md` | Ran the full 37-test suite, compiled export-customer-pdf, proved customer 1042 against the billing portal, wrote eval/bob-session.md |
+| `prove-suite.md`, `prove-suite.json`, `prove-suite.png` | Bob ran `eval/BOB_PLAN.md`: both test passes, prove for customer 1042, the unknown customer, and the renamed button. The summary shows 132.3k tokens and 13.31. |
 
 ## How these were produced
 
