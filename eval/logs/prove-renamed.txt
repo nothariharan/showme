@@ -1,0 +1,16 @@
+﻿COMMAND: python -m showme prove eval/logs/skills-1042/export-customer-pdf --download-dir eval/logs/dl-renamed --set customer_id=1042 --set portal_url=http://127.0.0.1:60083
+
+OUTPUT:
+page has no link or button named 'Export PDF'. Visible controls: Download PDF
+
+EXIT: 1
+
+=== proof.json ===
+{
+  "ok": false,
+  "error": "page has no link or button named 'Export PDF'. Visible controls: Download PDF"
+}
+
+
+=== tax-1042.pdf in dl-renamed ===
+NOT PRESENT (expected)

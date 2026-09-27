@@ -1,0 +1,16 @@
+﻿COMMAND: python -m showme prove eval/logs/skills-1042/export-customer-pdf --download-dir eval/logs/dl-0000 --set customer_id=0000 --set portal_url=http://127.0.0.1:63978
+
+OUTPUT:
+page has no link or button named 'Tax summary'. Visible controls: none
+
+EXIT: 1
+
+=== proof.json ===
+{
+  "ok": false,
+  "error": "page has no link or button named 'Tax summary'. Visible controls: none"
+}
+
+
+=== tax-0000.pdf ===
+NOT PRESENT (expected)

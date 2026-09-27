@@ -61,6 +61,18 @@ class HtmlSession:
         return self.page
 
 
+def session_for(browser: bool) -> HtmlSession:
+    if not browser:
+        return HtmlSession()
+    try:
+        from showme.playwright_runner import PlaywrightSession
+    except ImportError as exc:
+        raise RunError(
+            "Playwright is not installed. Install it with: pip install 'showme[browser]'"
+        ) from exc
+    return PlaywrightSession()
+
+
 def _click(page: Page, target: str, typed: dict[str, str]) -> Page:
     for text, href in page.links:
         if text == target:

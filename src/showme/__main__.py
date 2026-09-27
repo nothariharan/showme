@@ -9,9 +9,10 @@ import sys
 from pathlib import Path
 
 from showme.compile import compile_path, retarget
-from showme.html_runner import RunError, HtmlSession
+from showme.html_runner import RunError, session_for
 from showme.induce import InduceError, induce_bundle
 from showme.model import DemoError
+from showme.record import RecordError, bundle_recordings, capture
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -28,6 +29,7 @@ def main(argv: list[str] | None = None) -> int:
     run_parser = sub.add_parser("run", help="Repeat a compiled skill. Local skills run replay.py. HTML skills run against the live page.")
     run_parser.add_argument("skill", type=Path)
     run_parser.add_argument("--set", action="append", default=[], metavar="NAME=VALUE")
+    run_parser.add_argument("--browser", action="store_true", help="Run agent steps in Playwright. Requires the browser extra.")
 
     induce_parser = sub.add_parser("induce", help="Compile two or more demonstrations into one parameterized demonstration.")
     induce_parser.add_argument("bundle", type=Path)
@@ -46,6 +48,17 @@ def main(argv: list[str] | None = None) -> int:
         "--customer",
         help="Customer id that must appear in the PDF name and text. Defaults to customer_id, then customer_search_box.",
     )
+    prove_parser.add_argument("--browser", action="store_true", help="Run agent steps in Playwright. Requires the browser extra.")
+
+    record_parser = sub.add_parser("record", help="Fetch a portal recording, or induce two recordings into a demonstration.")
+    record_parser.add_argument("--portal-url", help="Portal page to open. The recording is read from /showme/recording on that host.")
+    record_parser.add_argument("--out", type=Path)
+    record_parser.add_argument("--fetch", action="store_true", help="Fetch the recording now. Do not open a browser or wait for Enter.")
+    record_parser.add_argument("--bundle", nargs=2, type=Path, metavar=("RUN1", "RUN2"))
+    record_parser.add_argument("--name")
+    record_parser.add_argument("--description")
+    record_parser.add_argument("--explanation")
+    record_parser.add_argument("--success")
 
     args = parser.parse_args(argv)
     try:
@@ -56,9 +69,11 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{demo.name}: {len(demo.steps)} steps, {len(demo.parameters)} parameters")
             return 0
         if args.command == "run":
-            return _run_skill(args.skill, args.set)
+            return _run_skill(args.skill, args.set, browser=args.browser)
         if args.command == "prove":
-            return _prove_skill(args.skill, args.set, args.download_dir, args.customer)
+            return _prove_skill(args.skill, args.set, args.download_dir, args.customer, browser=args.browser)
+        if args.command == "record":
+            return _record(args)
         if args.command == "induce":
             demonstration = induce_bundle(json.loads(args.bundle.read_text(encoding="utf-8")))
             args.out.write_text(json.dumps(demonstration, indent=2) + "\n", encoding="utf-8")
@@ -69,7 +84,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{args.step_id} now clicks {args.target}")
             return 0
         skill_dir = compile_path(args.demonstration, args.out)
-    except (DemoError, InduceError, FileExistsError, OSError, json.JSONDecodeError, RunError, KeyError) as exc:
+    except (DemoError, InduceError, RecordError, FileExistsError, OSError, json.JSONDecodeError, RunError, KeyError) as exc:
         print(exc, file=sys.stderr)
         return 1
     print(skill_dir)
@@ -90,7 +105,32 @@ def _apply_sets(trace: dict, pairs: list[str]) -> dict[str, str] | None:
     return params
 
 
-def _run_skill(skill: Path, pairs: list[str]) -> int:
+def _record(args: argparse.Namespace) -> int:
+    if args.bundle:
+        missing = [name for name in ("name", "description", "explanation", "success", "out") if not getattr(args, name)]
+        if missing:
+            print("bundle mode needs " + ", ".join(f"--{item}" for item in missing), file=sys.stderr)
+            return 2
+        bundle_recordings(
+            args.bundle[0],
+            args.bundle[1],
+            args.out,
+            name=args.name,
+            description=args.description,
+            explanation=args.explanation,
+            success=args.success,
+        )
+        print(args.out)
+        return 0
+    if not args.portal_url or args.out is None:
+        print("capture mode needs --portal-url and --out", file=sys.stderr)
+        return 2
+    capture(args.portal_url, args.out, fetch_only=args.fetch)
+    print(args.out)
+    return 0
+
+
+def _run_skill(skill: Path, pairs: list[str], browser: bool = False) -> int:
     trace_path = skill / "references" / "trace.json"
     trace = json.loads(trace_path.read_text(encoding="utf-8"))
     params = _apply_sets(trace, pairs)
@@ -103,14 +143,20 @@ def _run_skill(skill: Path, pairs: list[str]) -> int:
         completed = subprocess.run(command, check=False)
         return completed.returncode
     if executors == {"agent"}:
-        page = HtmlSession().run(trace, params)
+        page = session_for(browser).run(trace, params)
         print(f"finished on {page.url}")
         return 0
     print("this skill mixes local and agent steps; run those parts separately", file=sys.stderr)
     return 2
 
 
-def _prove_skill(skill: Path, pairs: list[str], download_dir: Path, customer: str | None) -> int:
+def _prove_skill(
+    skill: Path,
+    pairs: list[str],
+    download_dir: Path,
+    customer: str | None,
+    browser: bool = False,
+) -> int:
     trace = json.loads((skill / "references" / "trace.json").read_text(encoding="utf-8"))
     params = _apply_sets(trace, pairs)
     if params is None:
@@ -120,7 +166,7 @@ def _prove_skill(skill: Path, pairs: list[str], download_dir: Path, customer: st
         print("this skill mixes local and agent steps; run those parts separately", file=sys.stderr)
         return 2
     try:
-        page = HtmlSession().run(trace, params)
+        page = session_for(browser).run(trace, params)
     except RunError as exc:
         _write_proof(download_dir, {"ok": False, "error": str(exc)})
         print(exc, file=sys.stderr)

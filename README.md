@@ -32,6 +32,10 @@ python -m showme induce examples/export-customer-pdf/two-runs.json --out example
 
 `showme induce` compares two or more recordings. A typed value or a server address that changes becomes a parameter. A click, a path, or a success check that changes is a different workflow, and induction refuses it. `showme retarget <skill> <step-id> "New label"` updates one click after a control is renamed. The billing portal records the same events a person produces: `POST /showme/record` while the page is used, then `GET /showme/recording`.
 
+`showme record --portal-url http://127.0.0.1:PORT --out run.json` opens that page and waits until you press Enter, then writes the event list. `--fetch` skips the browser and the prompt. Two saved runs become a demonstration with `showme record --bundle run1.json run2.json --name ... --description ... --explanation ... --success ... --out demonstration.json`.
+
+`python -m showme.mcp` exposes `showme_induce`, `showme_compile`, and `showme_prove` after `pip install 'showme[mcp]'`. `.bob/mcp.json` points Bob at that module. `showme run --browser` and `showme prove --browser` use Playwright when `pip install 'showme[browser]'` is present, and otherwise print that install line. The default runner stays the stdlib HTML client.
+
 ## Tests
 
 The checks are split into four batches. Run them together:

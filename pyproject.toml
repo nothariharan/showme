@@ -7,6 +7,10 @@ requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "Hari" }]
 
+[project.optional-dependencies]
+mcp = ["mcp>=1.0"]
+browser = ["playwright>=1.40"]
+
 [project.scripts]
 showme = "showme.__main__:main"
 

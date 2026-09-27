@@ -4,190 +4,301 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>showme: skill proof for coding agents</title>
-  <meta name="description" content="ShowMe turns two demonstrations into an Agent Skill. A clean run of the billing portal must write the tax PDF.">
+  <meta name="description" content="ShowMe turns two demonstrations into an Agent Skill. A proved repeat spends no model tokens.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="dither dither-left" aria-hidden="true"></div>
+  <div class="dither dither-right" aria-hidden="true"></div>
+
   <header class="topbar">
-    <a class="brand" href="#top">
-      <img src="assets/showme-wordmark.png" alt="showme" width="2172" height="724">
-    </a>
+    <a class="brand" href="#top">showme</a>
     <nav class="nav" aria-label="Page">
-      <a href="#protocol">Protocol</a>
-      <a href="#sandbox">Sandbox</a>
-      <a href="#registry">Registry</a>
-      <a href="#docs">Docs</a>
+      <a href="#how">How it works</a>
+      <a href="#agents">Agents</a>
+      <a href="#compare">Compare</a>
+      <a href="#run">Run</a>
     </nav>
-    <button class="chip chip-nav" type="button" data-copy="python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042" aria-label="Copy install command">
-      <code>python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042</code>
-      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-        <rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
-        <path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path>
-      </svg>
+    <button class="chip" type="button" data-copy="python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042" aria-label="Copy prove command">
+      <code>python -m showme prove</code>
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect><path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path></svg>
     </button>
   </header>
 
   <main id="top">
     <section class="hero">
       <div class="wrap hero-copy">
-        <p class="kicker">Skill proof for coding agents</p>
-        <h1><span>Show it once.</span><span>Prove it on a clean machine.</span><span>Any agent can run it.</span></h1>
-        <p class="lede">ShowMe turns two demonstrations into an Agent Skill. A clean run of the billing portal must write the tax PDF. A renamed button stops the run. Bob, Claude Code, Cursor, and Codex read the same folder.</p>
-        <div class="hero-actions">
-          <a class="button" href="#protocol">Read the protocol</a>
-          <a class="quiet" href="#sandbox">Sandbox</a>
-          <a class="quiet" href="#registry">Registry</a>
-        </div>
-        <div class="install">
-          <button class="chip chip-hero" type="button" data-copy="python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042" aria-label="Copy install command">
-            <code>python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042</code>
-            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-              <rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
-              <path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path>
+        <h1>Show it once. Prove it on a clean machine. Any agent can run it.</h1>
+        <p class="lede">Two demonstrations become one Agent Skill. The repeat writes the tax PDF in local Python. It spends no model tokens, and a renamed button stops the run.</p>
+      </div>
+    </section>
+
+    <section class="how" id="how">
+      <div class="how-grid">
+        <ol class="steps">
+          <li class="step is-on" data-step="watch">
+            <p class="cmd">showme induce</p>
+            <h2>Show the work twice.</h2>
+            <p>A value that changes, a customer id or a server, becomes a parameter. A click or a path that changes is a different workflow, and induction refuses it.</p>
+            <p class="prompt">$ python -m showme induce two-runs.json --out demonstration.json</p>
+          </li>
+          <li class="step" data-step="prove">
+            <p class="cmd">showme prove</p>
+            <h2>Prove it where the recording never was.</h2>
+            <p>The skill opens the billing portal and must write <code>tax-1042.pdf</code>. The page has to say the download started. An unknown customer writes no file.</p>
+            <p class="prompt">$ python -m showme prove export-customer-pdf --download-dir ./proof --set customer_id=1042</p>
+          </li>
+          <li class="step" data-step="halt">
+            <p class="cmd">halt</p>
+            <h2>A renamed button stops the run.</h2>
+            <p>If Export PDF is gone, the run does not click a neighbor. It names the missing label and the controls that are actually on the page. Retarget points that one step at the new label.</p>
+            <p class="prompt">$ python -m showme retarget export-customer-pdf export "Download PDF"</p>
+          </li>
+          <li class="step" data-step="agents">
+            <p class="cmd">any agent</p>
+            <h2>The same folder, four agents.</h2>
+            <p>Bob, Claude Code, Cursor, and Codex read one <code>SKILL.md</code>. The proved steps stay in the player. The model is not called again to remember the clicks.</p>
+            <p class="prompt">.agents/skills/ · .claude/skills/ · .cursor/skills/</p>
+          </li>
+        </ol>
+
+        <div class="stage-col">
+          <div class="stage" data-step="watch">
+            <p class="stage-caption"><span data-cap="watch">your demonstrations</span><span data-cap="prove">the clean run</span><span data-cap="halt">the stop</span><span data-cap="agents">the agents</span></p>
+            <svg class="pixel" viewBox="0 0 640 360" role="img" aria-label="Diagram of a demonstration becoming a proved skill that agents can run.">
+              <g class="node node-you" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="36" y="118" width="92" height="58"/>
+                <rect x="48" y="176" width="68" height="8"/>
+                <rect x="70" y="184" width="24" height="10"/>
+                <rect class="lamp" x="48" y="128" width="8" height="8"/>
+              </g>
+              <text class="label" x="82" y="220" text-anchor="middle">you</text>
+              <text class="sublabel" x="82" y="236" text-anchor="middle">two runs</text>
+
+              <g class="wire wire-prove">
+                <line x1="128" y1="148" x2="210" y2="148"/>
+                <text x="168" y="138" text-anchor="middle">prove</text>
+              </g>
+              <g class="node node-proof">
+                <rect x="214" y="108" width="72" height="80" fill="none" stroke="currentColor" stroke-width="2"/>
+                <rect x="226" y="122" width="48" height="6"/>
+                <rect x="226" y="134" width="36" height="6"/>
+                <rect x="226" y="146" width="42" height="6"/>
+                <text class="pdf" x="250" y="176" text-anchor="middle">PDF</text>
+              </g>
+              <text class="label" x="250" y="220" text-anchor="middle">the proof</text>
+              <text class="sublabel" x="250" y="236" text-anchor="middle">tax-1042.pdf</text>
+
+              <g class="wire wire-skill">
+                <line x1="286" y1="148" x2="360" y2="148"/>
+              </g>
+              <g class="node node-skill">
+                <rect x="364" y="112" width="78" height="72" fill="none" stroke="currentColor" stroke-width="2"/>
+                <text class="pdf" x="403" y="154" text-anchor="middle">SKILL</text>
+              </g>
+              <text class="label" x="403" y="220" text-anchor="middle">the skill</text>
+              <text class="sublabel" x="403" y="236" text-anchor="middle">0 tokens</text>
+
+              <g class="agents-row">
+                <g class="agent agent-bob"><rect x="470" y="48" width="28" height="28"/><text x="484" y="92" text-anchor="middle">Bob</text></g>
+                <g class="agent agent-claude"><rect x="518" y="48" width="28" height="28"/><text x="532" y="92" text-anchor="middle">Claude</text></g>
+                <g class="agent agent-cursor"><rect x="470" y="168" width="28" height="28"/><text x="484" y="212" text-anchor="middle">Cursor</text></g>
+                <g class="agent agent-codex"><rect x="518" y="168" width="28" height="28"/><text x="532" y="212" text-anchor="middle">Codex</text></g>
+                <path class="agent-wires" d="M442 148 H470 M484 76 V148 H498 M532 76 V120 M484 196 V148 H498 M532 196 V176" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              </g>
+
+              <g class="halt-mark">
+                <rect x="214" y="250" width="150" height="28" fill="none" stroke="currentColor" stroke-width="2"/>
+                <text x="289" y="269" text-anchor="middle">stopped · Export PDF missing</text>
+              </g>
             </svg>
-          </button>
-        </div>
-        <p class="meta">Python 3.11 · Local tool · MIT</p>
-      </div>
-    </section>
 
-    <section class="section" id="protocol">
-      <div class="wrap">
-        <h2>Watch. Prove. Approve. Pack.</h2>
-        <figure class="diagram">
-          <img src="assets/showme-flow.png" alt="Watch, Prove, Approve, Pack. Prove is the active step." width="2172" height="724">
-        </figure>
-        <div class="beats">
-          <article>
-            <h3>Watch</h3>
-            <p>You show the billing portal twice. A typed value or a server address that differs becomes a parameter. A click, a path, or a success check that differs is refused.</p>
-          </article>
-          <article>
-            <h3>Prove</h3>
-            <p>A clean run opens the portal and must write the tax PDF. The page says the download started, and the file is named with that customer id.</p>
-          </article>
-          <article>
-            <h3>Approve</h3>
-            <p>A renamed button stops the run. The message names the missing label and the controls on the page. Retarget points that one step at the new label.</p>
-          </article>
-          <article>
-            <h3>Pack</h3>
-            <p>The result is an Agent Skill folder. Bob, Claude Code, Cursor, and Codex read the same SKILL.md, trace, and player.</p>
-          </article>
+            <figure class="shot-slot" id="shot">
+              <img src="assets/product.png" alt="Product shot" hidden>
+              <figcaption>Product shot goes here. Drop <code>site/assets/product.png</code> when you have it.</figcaption>
+            </figure>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="sandbox">
+    <section class="agents" id="agents">
       <div class="wrap narrow">
-        <h2>A clean run writes the tax PDF.</h2>
-        <p class="lede">The sample is the shape of the proof a clean run writes for customer 1042. An unknown customer writes no PDF.</p>
-        <figure class="proof">
-          <figcaption>Proof sample</figcaption>
-          <dl>
-            <div>
-              <dt>ok</dt>
-              <dd>true</dd>
-            </div>
-            <div>
-              <dt>artifact</dt>
-              <dd>
-                ./proof/tax-1042.pdf
-                <svg class="check" viewBox="0 0 16 16" role="img" aria-label="Effect check passed">
-                  <path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </dd>
-            </div>
-          </dl>
-        </figure>
+        <h2>All the way down.</h2>
+        <p class="lede">One proved skill. Bob runs the tests. Claude Code, Cursor, and Codex read the same folder and repeat the work without another vision pass.</p>
+        <div class="tree" aria-hidden="true">
+          <div class="tree-top"><span class="px px-you"></span><small>the skill</small></div>
+          <div class="tree-row">
+            <div><span class="px px-bob"></span><small>Bob</small></div>
+            <div><span class="px px-claude"></span><small>Claude</small></div>
+            <div><span class="px px-cursor"></span><small>Cursor</small></div>
+            <div><span class="px px-codex"></span><small>Codex</small></div>
+          </div>
+        </div>
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab is-on" role="tab" aria-selected="true" data-agent="bob">Bob</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="claude">Claude Code</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="cursor">Cursor</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-agent="codex">Codex</button>
+        </div>
+        <div class="agent-panel is-on" data-agent="bob">
+          <button class="chip chip-block" type="button" data-copy="python -W default -m unittest discover -s tests -p test_prove.py -v">
+            <code>python -W default -m unittest discover -s tests -p test_prove.py -v</code>
+          </button>
+          <p class="aside">The only job for Bob: run this. It proves the PDF, the unknown customer, and the renamed button.</p>
+        </div>
+        <div class="agent-panel" data-agent="claude">
+          <p class="chip chip-block"><code>.claude/skills/export-customer-pdf/SKILL.md</code></p>
+          <p class="aside">Claude Code loads the folder. The player repeats the proved steps.</p>
+        </div>
+        <div class="agent-panel" data-agent="cursor">
+          <p class="chip chip-block"><code>.cursor/skills/export-customer-pdf/SKILL.md</code></p>
+          <p class="aside">Cursor reads the same skill. The parameters stay <code>customer_id</code> and <code>portal_url</code>.</p>
+        </div>
+        <div class="agent-panel" data-agent="codex">
+          <p class="chip chip-block"><code>.agents/skills/export-customer-pdf/SKILL.md</code></p>
+          <p class="aside">Codex gets the same trace. A repeat does not re-watch the screen.</p>
+        </div>
       </div>
     </section>
 
-    <section class="section" id="registry">
+    <section class="compare" id="compare">
       <div class="wrap">
         <h2>Where it sits.</h2>
-        <p class="lede">What each one does with the next run.</p>
+        <p class="lede">A browser agent pays a model every time it looks. A classic RPA suite sells a seat and a selector. ShowMe’s proved repeat is local Python, so the model bill on that run is zero.</p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th scope="col">Browser agent</th>
-                <th scope="col">Classic recorder</th>
-                <th scope="col">ShowMe</th>
+                <th></th>
+                <th>Stochastic browser agent</th>
+                <th>Traditional RPA</th>
+                <th class="us">showme</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>A model call every run.</td>
-                <td>Replays coordinates and leaves literals fixed.</td>
-                <td>
-                  <ul>
-                    <li>Parameters from two runs</li>
-                    <li>Effect check on the PDF</li>
-                    <li>Halt when the label is gone</li>
-                    <li>Agent Skills folder</li>
-                  </ul>
-                </td>
+                <th scope="row">What a repeat costs</th>
+                <td>A model bill every run. A long look-at-the-screen task is often tens of thousands of vision tokens.</td>
+                <td>A commercial seat. UiPath prices bots by license, not by token.</td>
+                <td class="us">$0 in model tokens. The player is local Python.</td>
+              </tr>
+              <tr>
+                <th scope="row">A wrong control</th>
+                <td>The model can click it.</td>
+                <td>The selector breaks, or a fallback clicks something nearby.</td>
+                <td class="us">The run stops and names the label. No PDF is written.</td>
+              </tr>
+              <tr>
+                <th scope="row">What changes between runs</th>
+                <td>Whatever the prompt happens to type.</td>
+                <td>Literals stay baked in unless someone edits the bot.</td>
+                <td class="us">Only values that differed across two demonstrations.</td>
+              </tr>
+              <tr>
+                <th scope="row">Who can run it</th>
+                <td>That agent’s session.</td>
+                <td>The RPA studio.</td>
+                <td class="us">Bob, Claude Code, Cursor, Codex. Same folder.</td>
+              </tr>
+              <tr>
+                <th scope="row">Seat price</th>
+                <td>The model vendor’s rate.</td>
+                <td>Ask the vendor. It is not free.</td>
+                <td class="us">No seat. The tool is MIT and stays on this machine.</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p class="footnote">The token line is the shape of a vision-agent run, not a bill we metered. UiPath does not publish one number that fits every contract. The zero is the part we run: <code>showme prove</code> does not call a model.</p>
       </div>
     </section>
 
-    <section class="section" id="docs">
+    <section class="closer" id="run">
+      <div class="dither dither-closer" aria-hidden="true"></div>
       <div class="wrap narrow">
-        <h2>The same folder.</h2>
-        <p class="lede">ShowMe writes an Agent Skill. Place that directory in <code>.agents/skills/</code>, <code>.claude/skills/</code>, or <code>.cursor/skills/</code>.</p>
-        <ul class="files">
-          <li><code>SKILL.md</code></li>
-          <li><code>references/trace.json</code></li>
-          <li><code>scripts/replay.py</code></li>
-        </ul>
-        <p class="note">Python 3.11 or newer. No third-party packages. The tool stays on this machine.</p>
+        <h2>Run it.</h2>
+        <p class="lede">Python 3.11 or newer. The billing portal in this repo is the clean machine. Twenty minutes is enough to induce, prove, and watch a renamed button stop.</p>
+        <button class="chip" type="button" data-copy="python -W default -m unittest discover -s tests -v">
+          <code>python -W default -m unittest discover -s tests -v</code>
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect><path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path></svg>
+        </button>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="wrap">
-      <p>local tool · MIT · <a href="https://github.com/nothariharan/showme">https://github.com/nothariharan/showme</a></p>
+      <p>local tool · MIT · <a href="https://github.com/nothariharan/showme">github.com/nothariharan/showme</a></p>
       <p>Headlines set in <a href="fonts/OFL.txt">Redaction</a> by MCKL.</p>
     </div>
   </footer>
 
   <script>
-    document.querySelectorAll("[data-copy]").forEach(function (button) {
-      button.addEventListener("click", async function () {
-        var text = button.getAttribute("data-copy");
-        var ok = false;
-        try {
-          await navigator.clipboard.writeText(text);
-          ok = true;
-        } catch (err) {
-          var area = document.createElement("textarea");
-          area.value = text;
-          area.setAttribute("readonly", "");
-          area.style.position = "fixed";
-          area.style.left = "-999px";
-          document.body.appendChild(area);
-          area.select();
-          try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
-          area.remove();
-        }
-        if (!ok) return;
-        var previous = button.getAttribute("aria-label");
-        button.dataset.state = "copied";
-        button.setAttribute("aria-label", "Copied");
-        window.setTimeout(function () {
-          delete button.dataset.state;
-          button.setAttribute("aria-label", previous);
-        }, 1600);
+    (function () {
+      var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+      var stage = document.querySelector(".stage");
+      if (stage && "IntersectionObserver" in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var name = entry.target.getAttribute("data-step");
+            stage.setAttribute("data-step", name);
+            steps.forEach(function (step) {
+              step.classList.toggle("is-on", step === entry.target);
+            });
+          });
+        }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
+        steps.forEach(function (step) { observer.observe(step); });
+      }
+
+      var shot = document.querySelector(".shot-slot img");
+      if (shot) {
+        shot.addEventListener("load", function () {
+          shot.hidden = false;
+          shot.parentNode.classList.add("has-shot");
+        });
+        shot.src = "assets/product.png";
+      }
+
+      document.querySelectorAll(".tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var name = tab.getAttribute("data-agent");
+          document.querySelectorAll(".tab").forEach(function (other) {
+            var on = other === tab;
+            other.classList.toggle("is-on", on);
+            other.setAttribute("aria-selected", on ? "true" : "false");
+          });
+          document.querySelectorAll(".agent-panel").forEach(function (panel) {
+            panel.classList.toggle("is-on", panel.getAttribute("data-agent") === name);
+          });
+        });
       });
-    });
+
+      document.querySelectorAll("[data-copy]").forEach(function (button) {
+        button.addEventListener("click", async function () {
+          var text = button.getAttribute("data-copy");
+          var ok = false;
+          try {
+            await navigator.clipboard.writeText(text);
+            ok = true;
+          } catch (err) {
+            ok = false;
+          }
+          if (!ok) return;
+          var previous = button.getAttribute("aria-label");
+          button.dataset.state = "copied";
+          button.setAttribute("aria-label", "Copied");
+          window.setTimeout(function () {
+            delete button.dataset.state;
+            if (previous) button.setAttribute("aria-label", previous);
+          }, 1600);
+        });
+      });
+    })();
   </script>
 </body>
 </html>

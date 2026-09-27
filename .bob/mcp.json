@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "showme": {
+      "command": "python",
+      "args": ["-m", "showme.mcp"]
+    }
+  }
+}
