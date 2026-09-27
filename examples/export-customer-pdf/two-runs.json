@@ -1,0 +1,28 @@
+{
+  "name": "export-customer-pdf",
+  "description": "Export a customer tax PDF from the billing portal when someone asks for that customer's tax summary.",
+  "explanation": "The person searched a customer, opened the tax summary, and exported the PDF. The customer id and the portal address change between demonstrations. The clicks do not.",
+  "success": "The page says Download started and the tax PDF for that customer is on disk.",
+  "runs": [
+    {
+      "events": [
+        {"type": "navigate", "url": "http://127.0.0.1:9001/billing"},
+        {"type": "type", "target": "Customer search box", "text": "1042"},
+        {"type": "click", "target": "Search"},
+        {"type": "click", "target": "Tax summary"},
+        {"type": "click", "target": "Export PDF"},
+        {"type": "wait_for", "text": "Download started"}
+      ]
+    },
+    {
+      "events": [
+        {"type": "navigate", "url": "http://127.0.0.1:9002/billing"},
+        {"type": "type", "target": "Customer search box", "text": "9921"},
+        {"type": "click", "target": "Search"},
+        {"type": "click", "target": "Tax summary"},
+        {"type": "click", "target": "Export PDF"},
+        {"type": "wait_for", "text": "Download started"}
+      ]
+    }
+  ]
+}

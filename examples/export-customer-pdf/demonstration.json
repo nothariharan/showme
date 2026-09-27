@@ -1,0 +1,57 @@
+{
+  "name": "export-customer-pdf",
+  "description": "Export a customer's tax summary PDF from the billing portal. Use when the user gives a customer id and asks for that customer's tax summary.",
+  "explanation": "The portal has no API. The person showed the path: open billing, search the customer id, open the tax summary, and export the PDF. The customer id changes every run. The menus do not.",
+  "parameters": [
+    {
+      "name": "customer_id",
+      "description": "Customer number to export.",
+      "example": "1042"
+    },
+    {
+      "name": "portal_url",
+      "description": "Billing portal address.",
+      "example": "http://127.0.0.1:8765"
+    }
+  ],
+  "steps": [
+    {
+      "id": "open",
+      "action": "navigate",
+      "url": "{portal_url}/billing",
+      "narration": "Start on the billing home, already signed in."
+    },
+    {
+      "id": "search",
+      "action": "type",
+      "target": "Customer search box",
+      "text": "{customer_id}",
+      "narration": "The search box is the only value that changes between customers."
+    },
+    {
+      "id": "submit-search",
+      "action": "click",
+      "target": "Search",
+      "narration": "Run the search."
+    },
+    {
+      "id": "open-summary",
+      "action": "click",
+      "target": "Tax summary",
+      "narration": "Open that customer's tax summary, not the invoice list."
+    },
+    {
+      "id": "export",
+      "action": "click",
+      "target": "Export PDF",
+      "narration": "Export writes the PDF. CSV is the wrong format."
+    },
+    {
+      "id": "confirm",
+      "action": "wait_for",
+      "text": "Download started",
+      "narration": "The run is finished only when the portal confirms the download."
+    }
+  ],
+  "success": "A PDF for the requested customer id was downloaded, and the page shows Download started."
+}

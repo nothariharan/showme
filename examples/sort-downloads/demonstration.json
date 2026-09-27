@@ -1,0 +1,66 @@
+{
+  "name": "sort-downloads",
+  "description": "Sort loose files out of a downloads folder into Finance and Images. Use when the user asks to tidy downloads or run the daily file sort.",
+  "explanation": "The person showed this once: invoices and receipts belong in Finance, screenshots and png files belong in Images, and anything else stays where it is. The folder names are the rule. The directory being sorted changes every time.",
+  "parameters": [
+    {
+      "name": "source_dir",
+      "description": "Folder that contains the unsorted files.",
+      "example": "Downloads"
+    }
+  ],
+  "steps": [
+    {
+      "id": "finance-dir",
+      "action": "ensure_dir",
+      "path": "{source_dir}/Finance",
+      "narration": "Finance is the destination for bills."
+    },
+    {
+      "id": "images-dir",
+      "action": "ensure_dir",
+      "path": "{source_dir}/Images",
+      "narration": "Images is the destination for screenshots."
+    },
+    {
+      "id": "move-invoices",
+      "action": "move_matching",
+      "source": "{source_dir}",
+      "pattern": "*invoice*",
+      "destination": "{source_dir}/Finance",
+      "narration": "Anything with invoice in the name is a bill."
+    },
+    {
+      "id": "move-receipts",
+      "action": "move_matching",
+      "source": "{source_dir}",
+      "pattern": "*receipt*",
+      "destination": "{source_dir}/Finance",
+      "narration": "Receipts follow the same rule as invoices."
+    },
+    {
+      "id": "move-screenshots",
+      "action": "move_matching",
+      "source": "{source_dir}",
+      "pattern": "*screenshot*",
+      "destination": "{source_dir}/Images",
+      "narration": "Screenshots go to Images."
+    },
+    {
+      "id": "move-png",
+      "action": "move_matching",
+      "source": "{source_dir}",
+      "pattern": "*.png",
+      "destination": "{source_dir}/Images",
+      "narration": "PNG files are treated as images."
+    },
+    {
+      "id": "bills-gone",
+      "action": "assert_none_matching",
+      "source": "{source_dir}",
+      "pattern": "*invoice*",
+      "narration": "Stop if an invoice is still sitting in the source folder."
+    }
+  ],
+  "success": "No file with invoice in the name remains in the source folder. Matching receipts and images are in Finance and Images."
+}

@@ -1,0 +1,18 @@
+[project]
+name = "showme"
+version = "0.1.0"
+description = "Compile a shown-and-explained workflow into an Agent Skill any coding agent can repeat."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Hari" }]
+
+[project.scripts]
+showme = "showme.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
