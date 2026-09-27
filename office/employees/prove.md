@@ -13,4 +13,4 @@ Build `showme prove`.
 - Tests live in `tests/test_prove.py` and use `examples/billing_portal/server.py` plus `examples/export-customer-pdf/demonstration.json`.
 - Leave `site/` and `assets/` alone.
 
-State: not started
+State: done
