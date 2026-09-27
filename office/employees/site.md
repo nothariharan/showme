@@ -15,4 +15,4 @@ Build the marketing page in `site/` to the visual language of https://wspx.verce
 - Use image files from `assets/` once they exist. Do not draw a fake verified hash or a fake star count.
 - Leave `src/` and `tests/` alone.
 
-State: not started
+State: done

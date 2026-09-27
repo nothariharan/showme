@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>showme: skill proof for coding agents</title>
+  <meta name="description" content="ShowMe turns two demonstrations into an Agent Skill. A clean run of the billing portal must write the tax PDF.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <img src="assets/showme-wordmark.png" alt="showme" width="2172" height="724">
+    </a>
+    <nav class="nav" aria-label="Page">
+      <a href="#protocol">Protocol</a>
+      <a href="#sandbox">Sandbox</a>
+      <a href="#registry">Registry</a>
+      <a href="#docs">Docs</a>
+    </nav>
+    <button class="chip chip-nav" type="button" data-copy="python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042" aria-label="Copy install command">
+      <code>python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042</code>
+      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+        <rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+        <path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path>
+      </svg>
+    </button>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-copy">
+        <p class="kicker">Skill proof for coding agents</p>
+        <h1><span>Show it once.</span><span>Prove it on a clean machine.</span><span>Any agent can run it.</span></h1>
+        <p class="lede">ShowMe turns two demonstrations into an Agent Skill. A clean run of the billing portal must write the tax PDF. A renamed button stops the run. Bob, Claude Code, Cursor, and Codex read the same folder.</p>
+        <div class="hero-actions">
+          <a class="button" href="#protocol">Read the protocol</a>
+          <a class="quiet" href="#sandbox">Sandbox</a>
+          <a class="quiet" href="#registry">Registry</a>
+        </div>
+        <div class="install">
+          <button class="chip chip-hero" type="button" data-copy="python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042" aria-label="Copy install command">
+            <code>python -m showme prove &lt;skill&gt; --download-dir ./proof --set portal_url=http://127.0.0.1:8765 --set customer_id=1042</code>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+              <rect x="5.5" y="5.5" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"></rect>
+              <path d="M3.5 10.5v-7h7" fill="none" stroke="currentColor" stroke-width="1.2"></path>
+            </svg>
+          </button>
+        </div>
+        <p class="meta">Python 3.11 · Local tool · MIT</p>
+      </div>
+    </section>
+
+    <section class="section" id="protocol">
+      <div class="wrap">
+        <h2>Watch. Prove. Approve. Pack.</h2>
+        <figure class="diagram">
+          <img src="assets/showme-flow.png" alt="Watch, Prove, Approve, Pack. Prove is the active step." width="2172" height="724">
+        </figure>
+        <div class="beats">
+          <article>
+            <h3>Watch</h3>
+            <p>You show the billing portal twice. A typed value or a server address that differs becomes a parameter. A click, a path, or a success check that differs is refused.</p>
+          </article>
+          <article>
+            <h3>Prove</h3>
+            <p>A clean run opens the portal and must write the tax PDF. The page says the download started, and the file is named with that customer id.</p>
+          </article>
+          <article>
+            <h3>Approve</h3>
+            <p>A renamed button stops the run. The message names the missing label and the controls on the page. Retarget points that one step at the new label.</p>
+          </article>
+          <article>
+            <h3>Pack</h3>
+            <p>The result is an Agent Skill folder. Bob, Claude Code, Cursor, and Codex read the same SKILL.md, trace, and player.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sandbox">
+      <div class="wrap narrow">
+        <h2>A clean run writes the tax PDF.</h2>
+        <p class="lede">The sample is the shape of the proof a clean run writes for customer 1042. An unknown customer writes no PDF.</p>
+        <figure class="proof">
+          <figcaption>Proof sample</figcaption>
+          <dl>
+            <div>
+              <dt>ok</dt>
+              <dd>true</dd>
+            </div>
+            <div>
+              <dt>artifact</dt>
+              <dd>
+                ./proof/tax-1042.pdf
+                <svg class="check" viewBox="0 0 16 16" role="img" aria-label="Effect check passed">
+                  <path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </dd>
+            </div>
+          </dl>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="registry">
+      <div class="wrap">
+        <h2>Where it sits.</h2>
+        <p class="lede">What each one does with the next run.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Browser agent</th>
+                <th scope="col">Classic recorder</th>
+                <th scope="col">ShowMe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A model call every run.</td>
+                <td>Replays coordinates and leaves literals fixed.</td>
+                <td>
+                  <ul>
+                    <li>Parameters from two runs</li>
+                    <li>Effect check on the PDF</li>
+                    <li>Halt when the label is gone</li>
+                    <li>Agent Skills folder</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="docs">
+      <div class="wrap narrow">
+        <h2>The same folder.</h2>
+        <p class="lede">ShowMe writes an Agent Skill. Place that directory in <code>.agents/skills/</code>, <code>.claude/skills/</code>, or <code>.cursor/skills/</code>.</p>
+        <ul class="files">
+          <li><code>SKILL.md</code></li>
+          <li><code>references/trace.json</code></li>
+          <li><code>scripts/replay.py</code></li>
+        </ul>
+        <p class="note">Python 3.11 or newer. No third-party packages. The tool stays on this machine.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>local tool · MIT · <a href="https://github.com/nothariharan/showme">https://github.com/nothariharan/showme</a></p>
+      <p>Headlines set in <a href="fonts/OFL.txt">Redaction</a> by MCKL.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll("[data-copy]").forEach(function (button) {
+      button.addEventListener("click", async function () {
+        var text = button.getAttribute("data-copy");
+        var ok = false;
+        try {
+          await navigator.clipboard.writeText(text);
+          ok = true;
+        } catch (err) {
+          var area = document.createElement("textarea");
+          area.value = text;
+          area.setAttribute("readonly", "");
+          area.style.position = "fixed";
+          area.style.left = "-999px";
+          document.body.appendChild(area);
+          area.select();
+          try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+          area.remove();
+        }
+        if (!ok) return;
+        var previous = button.getAttribute("aria-label");
+        button.dataset.state = "copied";
+        button.setAttribute("aria-label", "Copied");
+        window.setTimeout(function () {
+          delete button.dataset.state;
+          button.setAttribute("aria-label", previous);
+        }, 1600);
+      });
+    });
+  </script>
+</body>
+</html>

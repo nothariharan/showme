@@ -15,7 +15,7 @@ This folder is how the workstreams stay in sync. Each employee writes only their
 | Workstream | Branch | State |
 | --- | --- | --- |
 | prove | prove | not started |
-| site | site | not started |
+| site | site | done |
 | tester | main, after merge | waiting |
 
 ## Done means
